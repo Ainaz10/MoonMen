@@ -71,9 +71,7 @@ public class Player : MonoBehaviour
         curHp = curHp + deltaHp;
         print(curHp);
         if (curHp <= 0)
-        {
-            print("Произошла смерть");
-        }
+            GetComponent<CapsuleCollider2D>().enabled = false;
     }
 
 }
