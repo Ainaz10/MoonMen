@@ -4,25 +4,26 @@ using UnityEngine;
 
 public class Dog : MonoBehaviour
 {
-    float weight = 32f; //вес
-    int height = 40; // рост
-    bool owner = true; // хозяин
-    string breed = "Haski"; //порода
+    float weight = 32f; //РІРµСЃ
+    int height = 40; // СЂРѕСЃС‚
+    bool owner = true; // С…РѕР·СЏРёРЅ
+    string breed = "Haski"; //РїРѕСЂРѕРґР°
 
-    void Start ()
+    void Start()
     {
         if (weight > 35)
         {
-            print("Вашей собаке желательно сбросить вес");
-        }else
+            print("Р’Р°С€РµР№ СЃРѕР±Р°РєРµ Р¶РµР»Р°С‚РµР»СЊРЅРѕ СЃР±СЂРѕСЃРёС‚СЊ РІРµСЃ");
+        }
+        else
         {
-            print("У вашей собаки все отлично с весом!");
+            print("РЈ РІР°С€РµР№ СЃРѕР±Р°РєРё РІСЃРµ РѕС‚Р»РёС‡РЅРѕ СЃ РІРµСЃРѕРј!");
         }
 
 
-        if (height <= 40 && breed != "чихуахуа")
+        if (height <= 40 && breed != "С‡РёС…СѓР°С…СѓР°")
         {
-            print("Ваша собака еще не выросла");
+            print("Р’Р°С€Р° СЃРѕР±Р°РєР° РµС‰Рµ РЅРµ РІС‹СЂРѕСЃР»Р°");
         }
     }
 

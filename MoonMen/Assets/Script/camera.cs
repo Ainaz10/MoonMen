@@ -17,6 +17,6 @@ public class camera : MonoBehaviour
     {
         Vector3 position = target.position;
         position.z = transform.position.z;
-        transform.position = Vector3.Lerp(transform.position, position, speed * Time.deltaTime); // метод Lerp() отвечает за плавность. плавное движение камеры к игроку в данном случае. 
+        transform.position = Vector3.Lerp(transform.position, position, speed * Time.deltaTime); // РјРµС‚РѕРґ Lerp() РѕС‚РІРµС‡Р°РµС‚ Р·Р° РїР»Р°РІРЅРѕСЃС‚СЊ. РїР»Р°РІРЅРѕРµ РґРІРёР¶РµРЅРёРµ РєР°РјРµСЂС‹ Рє РёРіСЂРѕРєСѓ РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ. 
     }
 }

@@ -4,33 +4,34 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    //МЕТОДЫ СТОЛКНОВЕНИЯ С ВРАГОМ
-    //1) метод столкновения двух объектов
-    private void OnCollisionEnter2D(Collision2D collision) 
+    //РњР•РўРћР”Р« РЎРўРћР›РљРќРћР’Р•РќРРЇ РЎ Р’Р РђР“РћРњ
+    //1) РјРµС‚РѕРґ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ РґРІСѓС… РѕР±СЉРµРєС‚РѕРІ
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player") {
-            // print("Минус 1 жизнь");
+        if (collision.gameObject.tag == "Player")
+        {
+            // print("РњРёРЅСѓСЃ 1 Р¶РёР·РЅСЊ");
             collision.gameObject.GetComponent<Player>().RecountHp(-1);
             collision.gameObject.GetComponent<Rigidbody2D>().AddForce(transform.up * 8f, ForceMode2D.Impulse);
         }
-        
+
     }
 
-   /* 
-    *2) Метод когда объекты соприкоснулись
-    *private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            print("Stay");
-        }
-    }
-   3) метод когда объекты отсоединяются/отходят друг от друга (убрал ногу с мины - убился)
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            print("Объекты разошлись");
-        }
-    }*/
+    /* 
+     *2) РњРµС‚РѕРґ РєРѕРіРґР° РѕР±СЉРµРєС‚С‹ СЃРѕРїСЂРёРєРѕСЃРЅСѓР»РёСЃСЊ
+     *private void OnCollisionStay(Collision collision)
+     {
+         if (collision.gameObject.tag == "Player")
+         {
+             print("Stay");
+         }
+     }
+    3) РјРµС‚РѕРґ РєРѕРіРґР° РѕР±СЉРµРєС‚С‹ РѕС‚СЃРѕРµРґРёРЅСЏСЋС‚СЃСЏ/РѕС‚С…РѕРґСЏС‚ РґСЂСѓРі РѕС‚ РґСЂСѓРіР° (СѓР±СЂР°Р» РЅРѕРіСѓ СЃ РјРёРЅС‹ - СѓР±РёР»СЃСЏ)
+     private void OnCollisionExit2D(Collision2D collision)
+     {
+         if (collision.gameObject.tag == "Player")
+         {
+             print("РћР±СЉРµРєС‚С‹ СЂР°Р·РѕС€Р»РёСЃСЊ");
+         }
+     }*/
 }
