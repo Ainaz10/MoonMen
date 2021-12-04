@@ -18,8 +18,8 @@ public class airPatrol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(CanGo)
-        transform.position = Vector3.MoveTowards(transform.position, point1.position, speed * Time.deltaTime);
+        if (CanGo)
+            transform.position = Vector3.MoveTowards(transform.position, point1.position, speed * Time.deltaTime);
 
         if (transform.position == point1.position)
         {
@@ -32,7 +32,11 @@ public class airPatrol : MonoBehaviour
         }
         IEnumerator Waiting() // корутина для ожидания
         {
-            yield return new WaitForSeconds (waitTime);
+            yield return new WaitForSeconds(waitTime);
+            if (transform.rotation.y == 0)
+                transform.eulerAngles = new Vector3(0, 180, 0);
+            else
+                transform.eulerAngles = new Vector3(0, 0, 0);
             CanGo = true;
         }
     }
