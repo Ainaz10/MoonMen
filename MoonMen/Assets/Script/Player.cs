@@ -13,7 +13,10 @@ public class Player : MonoBehaviour
     int curHp;
     int maxHp = 3;
     bool isHit = false; // условие для персонажа если его бьют
-    public Main main; //обращение к файлу Main  
+    public Main main; //обращение к файлу Main
+    public bool key = false; // параметр отвечающий есть ключ или нет
+    bool canTP = true;
+    public bool inWater = false;
 
 
     // Start is called before the first frame update
@@ -27,23 +30,34 @@ public class Player : MonoBehaviour
 
     void Update() // метод проверки кода каждый ежекадрово 
     {
-
-
-        // !!! Если внутри if только одна команда то фигурные скобки можно не ставить. Если 2 и более то они не будут считываться, что бы считалось надо ставить фигурные скобки.
-        CheckGround();
-        if (Input.GetAxis("Horizontal") == 0 && isGrounded) // если (не нажата ни одна клавиша) и (находится на земле) то 
+        if (inWater) // условия для воды
         {
-            anim.SetInteger("State", 1); // { установить/задействовать анимацию ( "State", 1) } 1 - это номер анимации
+            anim.SetInteger("State", 4);
+            isGrounded = true; // возможность прыгать на воде
+            if (Input.GetAxis("Horizontal") != 0)
+                Flip(); 
         }
         else
         {
-            Flip(); // Flip находясь именно здесь активируется только когда вот это условие будет выполняться. если поставить на другое место то будет перегружать процессор т.к. будет проверяться каждый кадр.
-            if (isGrounded)
-                anim.SetInteger("State", 2);
+
+            // !!! Если внутри if только одна команда то фигурные скобки можно не ставить. Если 2 и более то они не будут считываться, что бы считалось надо ставить фигурные скобки.
+            CheckGround();
+            if (Input.GetAxis("Horizontal") == 0 && isGrounded) // если (не нажата ни одна клавиша) и (находится на земле) то 
+            {
+                anim.SetInteger("State", 1); // { установить/задействовать анимацию ( "State", 1) } 1 - это номер анимации
+            }
+            else
+            {
+                Flip(); // Flip находясь именно здесь активируется только когда вот это условие будет выполняться. если поставить на другое место то будет перегружать процессор т.к. будет проверяться каждый кадр.
+                if (isGrounded)
+                    anim.SetInteger("State", 2);
+            }
+            
         }
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded) // код для кнопки прыжка "пробел" 
             rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse); // код для прыжка.
     }
+
 
     void FixedUpdate()
     {
@@ -107,7 +121,33 @@ public class Player : MonoBehaviour
     void Lose()
     {
         main.GetComponent<Main>().Lose();
-    }    
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Key")
+        {
+            Destroy(collision.gameObject);
+            key = true;
+        }
+        if(collision.gameObject.tag == "Door")
+        {
+            if (collision.gameObject.GetComponent<Door>().isOpen && canTP)
+            { 
+                collision.gameObject.GetComponent<Door>().Teleport(gameObject);
+                canTP = false;
+                StartCoroutine(TPwait());
+            }
+            else if (key)
+                collision.gameObject.GetComponent<Door>().Unlock();
+        }
+    }
+
+    IEnumerator TPwait()
+    {
+        yield return new WaitForSeconds(1f);
+        canTP = true;
+    }
 
 }
 
