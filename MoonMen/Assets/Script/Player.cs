@@ -16,7 +16,8 @@ public class Player : MonoBehaviour
     public Main main; //обращение к файлу Main
     public bool key = false; // параметр отвечающий есть ключ или нет
     bool canTP = true;
-    public bool inWater = false;
+    public bool inWater = false; // параметр для воды
+    bool isClimbing = false; // параметр для движения по лестнице // параметр "!isClimbing" необходимо добавить во все анимации 
 
 
     // Start is called before the first frame update
@@ -28,12 +29,12 @@ public class Player : MonoBehaviour
     }
 
 
-    void Update() // метод проверки кода каждый ежекадрово 
+    void Update() // метод проверки кода ежекадрово 
     {
-        if (inWater) // условия для воды
+        if (inWater && !isClimbing) // условия для персонажа когда он в воде и не на лестнице 
         {
             anim.SetInteger("State", 4);
-            isGrounded = true; // возможность прыгать на воде
+            isGrounded = true; // возможность прыгать в воде
             if (Input.GetAxis("Horizontal") != 0)
                 Flip(); 
         }
@@ -42,14 +43,14 @@ public class Player : MonoBehaviour
 
             // !!! Если внутри if только одна команда то фигурные скобки можно не ставить. Если 2 и более то они не будут считываться, что бы считалось надо ставить фигурные скобки.
             CheckGround();
-            if (Input.GetAxis("Horizontal") == 0 && isGrounded) // если (не нажата ни одна клавиша) и (находится на земле) то 
+            if (Input.GetAxis("Horizontal") == 0 && (isGrounded) && !isClimbing) // если (не нажата ни одна клавиша) и (находится на земле) то 
             {
                 anim.SetInteger("State", 1); // { установить/задействовать анимацию ( "State", 1) } 1 - это номер анимации
             }
             else
             {
                 Flip(); // Flip находясь именно здесь активируется только когда вот это условие будет выполняться. если поставить на другое место то будет перегружать процессор т.к. будет проверяться каждый кадр.
-                if (isGrounded)
+                if (isGrounded && !isClimbing)
                     anim.SetInteger("State", 2);
             }
             
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, 0.2f); // все объекты в радиусе 0.2f будут внутри коллайдера. имитация земли под ногами.
         isGrounded = colliders.Length > 1; // один коллайдер это наш персонаж, если больше 1го коллайдера значит есть прикосновение с землей или твердым объектом. 
 
-        if (!isGrounded)                    // если (нет прикосновения)
+        if (!isGrounded && !isClimbing)     // если (нет прикосновения)
             anim.SetInteger("State", 3);    // анимацию.установить("State", 3)
     }
 
@@ -123,6 +124,7 @@ public class Player : MonoBehaviour
         main.GetComponent<Main>().Lose();
     }
 
+    // Метод для ключа и дверей
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Key")
@@ -147,6 +149,37 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         canTP = true;
+    }
+
+    // Подъем по лестнице
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Ladder")
+        {
+            isClimbing = true;
+            rb.bodyType = RigidbodyType2D.Kinematic; // убираем гравитацию
+            if (Input.GetAxis("Vertical") == 0) //условия для анимации при нажатии клавиша вверх 
+            {
+                anim.SetInteger("State", 5);
+            }
+            else
+            {
+                anim.SetInteger("State", 6);
+                transform.Translate(Vector3.up * Input.GetAxis("Vertical") * speed * 0.5f * Time.deltaTime);  // translate меняет позицию персонажа когда он находится в зоне лестницы
+            }
+            
+        }
+    }
+
+    //создаем метод позволяющий возвращаться на землю после схода с лестницы
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Ladder")
+        {
+            isClimbing = false;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
+        
     }
 
 }
