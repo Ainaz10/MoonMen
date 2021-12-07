@@ -182,6 +182,20 @@ public class Player : MonoBehaviour
         
     }
 
+    // создание батута
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Trampoline")
+            StartCoroutine(TrampolineAnim(collision.gameObject.GetComponentInParent<Animator>()));
+    }
+    IEnumerator TrampolineAnim(Animator an)
+    {
+        an.SetBool("isJump", true);
+        yield return new WaitForSeconds(0.5f);
+        an.SetBool("isJump", false);
+        
+    }
+    
 }
 
 

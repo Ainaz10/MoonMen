@@ -7,6 +7,8 @@ TagManager:
   - Key
   - Door
   - Ladder
+  - Trampoline
+  - MarkBox
   layers:
   - Default
   - TransparentFX
