@@ -9,6 +9,10 @@ TagManager:
   - Ladder
   - Trampoline
   - MarkBox
+  - Coin
+  - Heart
+  - Mushroom
+  - BlueGem
   layers:
   - Default
   - TransparentFX

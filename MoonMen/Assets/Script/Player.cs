@@ -18,7 +18,8 @@ public class Player : MonoBehaviour
     bool canTP = true;
     public bool inWater = false; // параметр для воды
     bool isClimbing = false; // параметр для движения по лестнице // параметр "!isClimbing" необходимо добавить во все анимации 
-
+    int coins = 0; // для монет
+    bool canHit = true; // можем ли бить врага
 
     // Start is called before the first frame update
     void Start()
@@ -83,14 +84,22 @@ public class Player : MonoBehaviour
             anim.SetInteger("State", 3);    // анимацию.установить("State", 3)
     }
 
+    // метод для жизней
     public void RecountHp(int deltaHp)
     {
-        curHp = curHp + deltaHp;
-        if (deltaHp < 0)
+        
+        if (deltaHp < 0 && canHit)
         {
+            curHp = curHp + deltaHp;
             StopCoroutine(OnHit());
+            canHit = false;
             isHit = true;
             StartCoroutine(OnHit());
+        }
+        // кол-во жизней может быть равен только максимальному значению т.е. к трем
+        else if (curHp < maxHp){
+            curHp = curHp + deltaHp;
+            curHp = maxHp;
         }
             
         print(curHp);
@@ -101,6 +110,7 @@ public class Player : MonoBehaviour
         }
     }
 
+
     IEnumerator OnHit() // анимация цвета если у персонажа отнимается жизнь
     {
         if (isHit)
@@ -109,15 +119,21 @@ public class Player : MonoBehaviour
             GetComponent<SpriteRenderer>().color = new Color(1f, GetComponent<SpriteRenderer>().color.g + 0.04f, GetComponent<SpriteRenderer>().color.b + 0.04f);
 
         if (GetComponent<SpriteRenderer>().color.g == 1f)
+        {
             StopCoroutine(OnHit());
+            canHit = true;
+        }
+            
 
         if (GetComponent<SpriteRenderer>().color.g <= 0)
             isHit = false;
+        
          
         yield return new WaitForSeconds(0.02f);
         StartCoroutine(OnHit());
 
     }
+
 
     void Lose()
     {
@@ -143,6 +159,36 @@ public class Player : MonoBehaviour
             else if (key)
                 collision.gameObject.GetComponent<Door>().Unlock();
         }
+
+        // собираем монетки
+        if (collision.gameObject.tag == "Coin")
+        {
+            Destroy(collision.gameObject);
+            coins++;
+            print("Кол-во монеток равно " + coins);
+        }
+
+        // собираем сердечки
+        if (collision.gameObject.tag == "Heart")
+        {
+            Destroy(collision.gameObject);
+            RecountHp(1);
+            
+        }
+        // подбор мухамора
+        if (collision.gameObject.tag == "Mushroom")
+        {
+            Destroy(collision.gameObject);
+            RecountHp(-1);
+        }
+
+        // подбор синего кристалла
+        if (collision.gameObject.tag == "BlueGem")
+        {
+            Destroy(collision.gameObject);
+            StartCoroutine(NoHit());
+        }
+
     }
 
     IEnumerator TPwait()
@@ -188,13 +234,25 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Trampoline")
             StartCoroutine(TrampolineAnim(collision.gameObject.GetComponentInParent<Animator>()));
     }
+
     IEnumerator TrampolineAnim(Animator an)
     {
         an.SetBool("isJump", true);
         yield return new WaitForSeconds(0.5f);
         an.SetBool("isJump", false);
-        
     }
+
+    IEnumerator NoHit()
+    {
+        canHit = false;
+        print("Неуязвимость активирована");
+        yield return new WaitForSeconds(5f);
+        canHit = true;
+        print("Персонажа можно бить!");
+           
+    }
+
+
     
 }
 
