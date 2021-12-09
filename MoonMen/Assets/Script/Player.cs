@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     bool isClimbing = false; // параметр для движения по лестнице // параметр "!isClimbing" необходимо добавить во все анимации 
     int coins = 0; // для монет
     bool canHit = true; // можем ли бить врага
+    public GameObject blueGem, greenGem;
+    int gemCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -87,7 +89,7 @@ public class Player : MonoBehaviour
     // метод для жизней
     public void RecountHp(int deltaHp)
     {
-        
+         
         if (deltaHp < 0 && canHit)
         {
             curHp = curHp + deltaHp;
@@ -97,7 +99,7 @@ public class Player : MonoBehaviour
             StartCoroutine(OnHit());
         }
         // кол-во жизней может быть равен только максимальному значению т.е. к трем
-        else if (curHp < maxHp){
+        else if (curHp > maxHp){
             curHp = curHp + deltaHp;
             curHp = maxHp;
         }
@@ -189,6 +191,13 @@ public class Player : MonoBehaviour
             StartCoroutine(NoHit());
         }
 
+        // подбор зеленого кристалла
+        if (collision.gameObject.tag == "GreenGem")
+        {
+            Destroy(collision.gameObject);
+            StartCoroutine(SpeedBonus());
+        }
+
     }
 
     IEnumerator TPwait()
@@ -244,16 +253,62 @@ public class Player : MonoBehaviour
 
     IEnumerator NoHit()
     {
+        gemCount++;
+        blueGem.SetActive(true);
+        CheckGems(blueGem);
+
         canHit = false;
-        print("Неуязвимость активирована");
-        yield return new WaitForSeconds(5f);
+        blueGem.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        //print("Неуязвимость активирована");
+        yield return new WaitForSeconds(4f);
+        StartCoroutine(Invis(blueGem.GetComponent<SpriteRenderer>(), 0.02f));
+        yield return new WaitForSeconds(1f); 
         canHit = true;
-        print("Персонажа можно бить!");
+        //print("Персонажа можно бить!");
+        gemCount--;
+        blueGem.SetActive(false);
+        CheckGems(greenGem);
            
     }
+    // корутина для зеленого кристалла
+    IEnumerator SpeedBonus()
+    {
+        gemCount++;
+        greenGem.SetActive(true);
+        CheckGems(greenGem);
 
+        speed = speed * 2;
+        greenGem.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        // print("Скорость увеличена в два раза");
+        yield return new WaitForSeconds(4f);
+        StartCoroutine(Invis(greenGem.GetComponent<SpriteRenderer>(), 0.02f));
+        yield return new WaitForSeconds(1f);
+        speed = speed / 2;
+        // print("Скорость стала обычной");
+        gemCount--;
+        greenGem.SetActive(false);
+        CheckGems(blueGem);
 
-    
+    }
+
+    void CheckGems(GameObject obj)
+    {
+        if (gemCount == 1)
+            obj.transform.localPosition = new Vector3(0f, 0.6f, obj.transform.localPosition.z);
+        else if (gemCount == 2)
+        {
+            blueGem.transform.localPosition = new Vector3(-0.5f, 0.5f, blueGem.transform.localPosition.z);
+            greenGem.transform.localPosition = new Vector3(0.5f, 0.5f, blueGem.transform.localPosition.z);
+        }
+    }
+
+    IEnumerator Invis(SpriteRenderer spr, float time)
+    {
+        spr.color = new Color(1f, 1f, 1f, spr.color.a - time * 2);
+        yield return new WaitForSeconds(time);
+        if (spr.color.a > 0)
+            StartCoroutine(Invis(spr, time));
+    }
 }
 
 
