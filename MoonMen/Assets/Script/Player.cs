@@ -99,9 +99,11 @@ public class Player : MonoBehaviour
             StartCoroutine(OnHit());
         }
         // кол-во жизней может быть равен только максимальному значению т.е. к трем
-        else if (curHp > maxHp){
-            curHp = curHp + deltaHp;
-            curHp = maxHp;
+        else if (deltaHp > 0){
+            if (curHp >= maxHp)
+                curHp = maxHp;
+            else
+                curHp = curHp + deltaHp;
         }
             
         print(curHp);
@@ -120,16 +122,20 @@ public class Player : MonoBehaviour
         else 
             GetComponent<SpriteRenderer>().color = new Color(1f, GetComponent<SpriteRenderer>().color.g + 0.04f, GetComponent<SpriteRenderer>().color.b + 0.04f);
 
-        if (GetComponent<SpriteRenderer>().color.g == 1f)
+        if (GetComponent<SpriteRenderer>().color.g >= 1f)
         {
-            StopCoroutine(OnHit());
             canHit = true;
+            GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
+            yield break;
         }
             
 
         if (GetComponent<SpriteRenderer>().color.g <= 0)
+        {
             isHit = false;
-        
+            GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f);
+
+        }
          
         yield return new WaitForSeconds(0.02f);
         StartCoroutine(OnHit());
@@ -212,7 +218,9 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Ladder")
         {
             isClimbing = true;
-            rb.bodyType = RigidbodyType2D.Kinematic; // убираем гравитацию
+            //rb.bodyType = RigidbodyType2D.Kinematic; // убираем гравитацию
+            rb.gravityScale = 0f;
+            rb.velocity = new Vector2(0, 0);
             if (Input.GetAxis("Vertical") == 0) //условия для анимации при нажатии клавиша вверх 
             {
                 anim.SetInteger("State", 5);
@@ -232,7 +240,8 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Ladder")
         {
             isClimbing = false;
-            rb.bodyType = RigidbodyType2D.Dynamic;
+            // rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 1f;
         }
         
     }
@@ -280,7 +289,7 @@ public class Player : MonoBehaviour
         speed = speed * 2;
         greenGem.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
         // print("Скорость увеличена в два раза");
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(9f);
         StartCoroutine(Invis(greenGem.GetComponent<SpriteRenderer>(), 0.02f));
         yield return new WaitForSeconds(1f);
         speed = speed / 2;
