@@ -232,6 +232,17 @@ public class Player : MonoBehaviour
             }
             
         }
+
+        if (collision.gameObject.tag == "Icy") // условие для скольжения (вход в лед(скользкая поверхность))
+        {
+            if (rb.gravityScale == 1f)
+            {
+                rb.gravityScale = 7f;
+                speed *= 0.25f;
+            }
+            
+        }
+         
     }
 
     //создаем метод позволяющий возвращаться на землю после схода с лестницы
@@ -243,7 +254,16 @@ public class Player : MonoBehaviour
             // rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = 1f;
         }
-        
+
+        if (collision.gameObject.tag == "Icy") // условие для скольжения (выход изо льда (наступаем на обычную поверхность))
+        {
+            if (rb.gravityScale == 7f)
+            {
+                rb.gravityScale = 1f;
+                speed *= 4f;
+            }
+            
+        }
     }
 
     // создание батута
@@ -251,6 +271,12 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "Trampoline")
             StartCoroutine(TrampolineAnim(collision.gameObject.GetComponentInParent<Animator>()));
+
+        if (collision.gameObject.tag == "Quicksand") // условия для зыбучего песка
+        {
+            speed *= 0.25f;
+            rb.mass *= 100f; 
+        }
     }
 
     IEnumerator TrampolineAnim(Animator an)
@@ -317,6 +343,15 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(time);
         if (spr.color.a > 0)
             StartCoroutine(Invis(spr, time));
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Quicksand") // условия для зыбучего песка
+        {
+            speed *= 4f;
+            rb.mass *= 0.01f;
+        }
     }
 }
 
