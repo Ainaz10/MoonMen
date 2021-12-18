@@ -353,6 +353,12 @@ public class Player : MonoBehaviour
             rb.mass *= 0.01f;
         }
     }
+
+    //доступ к значениям собранных монет
+    public int GetCoins()
+    {
+        return coins;
+    }
 }
 
 
