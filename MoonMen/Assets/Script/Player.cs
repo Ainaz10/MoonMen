@@ -105,8 +105,7 @@ public class Player : MonoBehaviour
             else
                 curHp = curHp + deltaHp;
         }
-            
-        print(curHp);
+        
         if (curHp <= 0)
         {
             GetComponent<CapsuleCollider2D>().enabled = false;
@@ -173,7 +172,7 @@ public class Player : MonoBehaviour
         {
             Destroy(collision.gameObject);
             coins++;
-            print("Кол-во монеток равно " + coins);
+           
         }
 
         // собираем сердечки
@@ -358,6 +357,11 @@ public class Player : MonoBehaviour
     public int GetCoins()
     {
         return coins;
+    }
+
+    public int GetHP()
+    {
+        return curHp;
     }
 }
 
