@@ -54,6 +54,19 @@ public class Main : MonoBehaviour
         Time.timeScale = 0f;
         player.enabled = true;
         WinScreen.SetActive(true);
+
+        // создание ключей для сохранение уровней
+        if (!PlayerPrefs.HasKey("Lvl") || PlayerPrefs.GetInt("Lvl") < SceneManager.GetActiveScene().buildIndex)
+            PlayerPrefs.SetInt("Lvl", SceneManager.GetActiveScene().buildIndex);
+
+        //  сохранение монеток
+        if (PlayerPrefs.HasKey("coins"))
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + player.GetCoins());
+        else
+            PlayerPrefs.SetInt("coins", player.GetCoins());
+
+        print(PlayerPrefs.GetInt("coins"));
+
     }
 
     public void Lose()
