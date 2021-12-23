@@ -13,12 +13,23 @@ public class Main : MonoBehaviour
     public GameObject PauseScreen;
     public GameObject WinScreen;
     public GameObject LoseScreen;
+    float timer = 0f;
+    public Text timeText;
+    public TimeWork timeWork;
+    public float CountDown; 
+
 
     public void ReloadLvl()
     {
         Time.timeScale = 1f;
         player.enabled = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void Start()
+    {
+        if ((int)timeWork == 2)
+            timer = CountDown;
     }
 
     public void Update()
@@ -32,6 +43,24 @@ public class Main : MonoBehaviour
             else
                 hearts[i].sprite = noonLife;
         }
+
+        // работа с таймерам
+        if ((int)timeWork == 1)
+        {
+            timer += Time.deltaTime;
+            timeText.text = timer.ToString("F2").Replace(".", ":");
+        }
+        else if ((int)timeWork == 2)
+
+        {
+            timer -= Time.deltaTime;
+            // timeText.text = timer.ToString("F2").Replace(".", ":");
+            timeText.text = ((int)timer / 60).ToString() + ":" + ((int)timer - ((int)timer / 60) * 60).ToString("D2"); //кол-во сек на таймере = кол-во всех сек - (кол-во мин)*60
+             if (timer <= 0)
+                Lose();
+        }
+        else
+            timeText.gameObject.SetActive(false);
 
     }
 
@@ -75,6 +104,7 @@ public class Main : MonoBehaviour
         player.enabled = true;
         LoseScreen.SetActive(true);
     }
+
     public void Menulvl()
     {
         Time.timeScale = 1f;
@@ -88,5 +118,13 @@ public class Main : MonoBehaviour
         player.enabled = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
+
+}
+
+public enum TimeWork
+{
+    None,
+    StopWatch,
+    Timer 
 }
 

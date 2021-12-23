@@ -16,6 +16,9 @@ TagManager:
   - GreenGem
   - Quicksand
   - Icy
+  - Lava
+  - TimerButtonStop
+  - TimerButtonStart
   layers:
   - Default
   - TransparentFX

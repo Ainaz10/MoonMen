@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -22,6 +23,11 @@ public class Player : MonoBehaviour
     bool canHit = true; // можем ли бить врага
     public GameObject blueGem, greenGem;
     int gemCount = 0;
+    float hitTimer = 0f;
+    public Image PlayerCountdown;
+    float insideTimer = -1f;
+    public float insideTimerUp = 30f;
+    public Image insideCountdown;
 
     // Start is called before the first frame update
     void Start()
@@ -56,10 +62,26 @@ public class Player : MonoBehaviour
                 if (isGrounded && !isClimbing)
                     anim.SetInteger("State", 2);
             }
-            
+
         }
+
+
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded) // код для кнопки прыжка "пробел" 
             rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse); // код для прыжка.
+
+        if (insideTimer >= 0f)
+        {
+            insideTimer += Time.deltaTime;
+            if (insideTimer >= insideTimerUp)
+            {
+                insideTimer = 0f;
+                RecountHp(-1);
+            }
+            else
+                insideCountdown.fillAmount = 1 - (insideTimer / insideTimerUp);
+        }
+
+
     }
 
 
@@ -203,6 +225,18 @@ public class Player : MonoBehaviour
             StartCoroutine(SpeedBonus());
         }
 
+        // кнопка старт стоп
+        if (collision.gameObject.tag == "TimerButtonStart")
+        {
+            insideTimer = 0f;
+        }
+
+        if (collision.gameObject.tag == "TimerButtonStop")
+        {
+            insideTimer = -1f;
+            insideCountdown.fillAmount = 0f;
+        }
+
     }
 
     IEnumerator TPwait()
@@ -241,7 +275,21 @@ public class Player : MonoBehaviour
             }
             
         }
-         
+
+        if(collision.gameObject.tag == "Lava")
+        {
+            hitTimer += Time.deltaTime;
+            if (hitTimer >= 3f)
+            {
+                hitTimer = 0f;
+                PlayerCountdown.fillAmount = 1f;
+                RecountHp(-1);
+
+            }
+            else
+                PlayerCountdown.fillAmount = 1 - (hitTimer / 3f);
+        }
+
     }
 
     //создаем метод позволяющий возвращаться на землю после схода с лестницы
@@ -263,6 +311,14 @@ public class Player : MonoBehaviour
             }
             
         }
+
+        if (collision.gameObject.tag == "Lava")
+        {
+            hitTimer = 0f;
+            PlayerCountdown.fillAmount = 0f;
+        }
+             
+
     }
 
     // создание батута
