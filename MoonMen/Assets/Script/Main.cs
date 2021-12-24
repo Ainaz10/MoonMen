@@ -16,7 +16,8 @@ public class Main : MonoBehaviour
     float timer = 0f;
     public Text timeText;
     public TimeWork timeWork;
-    public float CountDown; 
+    public float CountDown;
+    public GameObject inventoryPan;
 
 
     public void ReloadLvl()
@@ -96,6 +97,10 @@ public class Main : MonoBehaviour
 
         print(PlayerPrefs.GetInt("coins"));
 
+        // скрытие панеля с предметами
+        inventoryPan.SetActive(false);
+        GetComponent<Inventory>().RecountItems();
+
     }
 
     public void Lose()
@@ -103,6 +108,10 @@ public class Main : MonoBehaviour
         Time.timeScale = 0f;
         player.enabled = true;
         LoseScreen.SetActive(true);
+
+        // скрытие панеля с предметами
+        inventoryPan.SetActive(false);
+        GetComponent<Inventory>().RecountItems();
     }
 
     public void Menulvl()

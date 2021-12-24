@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     float insideTimer = -1f;
     public float insideTimerUp = 30f;
     public Image insideCountdown;
+    public Inventory inventory;
 
     // Start is called before the first frame update
     void Start()
@@ -176,6 +177,8 @@ public class Player : MonoBehaviour
         {
             Destroy(collision.gameObject);
             key = true;
+            inventory.Add_key();
+
         }
         if(collision.gameObject.tag == "Door")
         {
@@ -201,7 +204,8 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Heart")
         {
             Destroy(collision.gameObject);
-            RecountHp(1);
+            // RecountHp(1);
+            inventory.Add_hp();
             
         }
         // подбор мухамора
@@ -215,14 +219,16 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "BlueGem")
         {
             Destroy(collision.gameObject);
-            StartCoroutine(NoHit());
+            // StartCoroutine(NoHit());
+            inventory.Add_bg();
         }
 
         // подбор зеленого кристалла
         if (collision.gameObject.tag == "GreenGem")
         {
             Destroy(collision.gameObject);
-            StartCoroutine(SpeedBonus());
+            // StartCoroutine(SpeedBonus());
+            inventory.Add_gg();
         }
 
         // кнопка старт стоп
@@ -418,6 +424,17 @@ public class Player : MonoBehaviour
     public int GetHP()
     {
         return curHp;
+    }
+
+    //делаем публичными методы для синего и зеленого кристалла для того что бы можно было использовать в скрипте inventory
+    public void BlueGem()
+    {
+        StartCoroutine(NoHit());
+    }
+
+    public void GreenGem()
+    {
+        StartCoroutine(SpeedBonus());
     }
 }
 

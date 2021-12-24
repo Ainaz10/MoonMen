@@ -21,6 +21,15 @@ public class Menu : MonoBehaviour
                 else
                     lvls[i].interactable = false;
             }
+
+        if (!PlayerPrefs.HasKey("hp"))
+            PlayerPrefs.SetInt("hp", 0);
+
+        if (!PlayerPrefs.HasKey("bg"))
+            PlayerPrefs.SetInt("bg", 0);
+
+        if (!PlayerPrefs.HasKey("gg"))
+            PlayerPrefs.SetInt("gg", 0);
     }
 
     private void Update() // метод для вывода общего кол-ва монеток в меню
@@ -39,5 +48,33 @@ public class Menu : MonoBehaviour
     public void DelKeys()
     {
         PlayerPrefs.DeleteAll();
+    }
+
+    // реализация покупок в магазине
+    public void Buy_hp(int cost)
+    {
+        if (PlayerPrefs.GetInt("coins") >= cost)
+        {
+            PlayerPrefs.SetInt("hp", PlayerPrefs.GetInt("hp") + 1);
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") - cost); 
+        }
+    }
+
+    public void Buy_bg(int cost)
+    {
+        if (PlayerPrefs.GetInt("coins") >= cost)
+        {
+            PlayerPrefs.SetInt("bg", PlayerPrefs.GetInt("bg") + 1);
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") - cost);
+        }
+    }
+
+    public void Buy_gg(int cost)
+    {
+        if (PlayerPrefs.GetInt("coins") >= cost)
+        {
+            PlayerPrefs.SetInt("gg", PlayerPrefs.GetInt("gg") + 1);
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") - cost);
+        }
     }
 }
