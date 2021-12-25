@@ -9,6 +9,8 @@ public class Menu : MonoBehaviour
 {
     public Button[] lvls;
     public Text coinText;
+    public Slider musicSlider, soundSlider;
+    public Text musicText, soundText;
 
 
     void Start() // метод сверяющий кол-во пройденных уровней и в зависимости от пройденных уровней открывает доступ к другим уровням
@@ -30,10 +32,24 @@ public class Menu : MonoBehaviour
 
         if (!PlayerPrefs.HasKey("gg"))
             PlayerPrefs.SetInt("gg", 0);
+
+        if (!PlayerPrefs.HasKey("MusicVolume"))
+            PlayerPrefs.SetInt("MusicVolume", 3);
+        if (!PlayerPrefs.HasKey("SoundVolume"))
+            PlayerPrefs.SetInt("SoundVolume", 8);
+
+        musicSlider.value = PlayerPrefs.GetInt("MusicVolume");
+        soundSlider.value = PlayerPrefs.GetInt("SoundVolume");
     }
 
     private void Update() // метод для вывода общего кол-ва монеток в меню
     {
+        PlayerPrefs.SetInt("MusicVolume", (int)musicSlider.value);
+        PlayerPrefs.SetInt("SoundVolume", (int)soundSlider.value);
+        musicText.text = musicSlider.value.ToString();
+        soundText.text = soundSlider.value.ToString();
+
+
         if (PlayerPrefs.HasKey("coins"))
             coinText.text = PlayerPrefs.GetInt("coins").ToString();
         else

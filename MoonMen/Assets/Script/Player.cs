@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     public float insideTimerUp = 30f;
     public Image insideCountdown;
     public Inventory inventory;
+    public Soundeffector soundeffector;
 
     // Start is called before the first frame update
     void Start()
@@ -65,11 +66,6 @@ public class Player : MonoBehaviour
             }
 
         }
-
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded) // код для кнопки прыжка "пробел" 
-            rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse); // код для прыжка.
-
         if (insideTimer >= 0f)
         {
             insideTimer += Time.deltaTime;
@@ -82,7 +78,11 @@ public class Player : MonoBehaviour
                 insideCountdown.fillAmount = 1 - (insideTimer / insideTimerUp);
         }
 
-
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded) // код для кнопки прыжка "пробел" 
+        {
+            rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse); // код для прыжка.
+            soundeffector.PlayJumpSound(); //вызов звука прыжка
+        }
     }
 
 
@@ -197,7 +197,8 @@ public class Player : MonoBehaviour
         {
             Destroy(collision.gameObject);
             coins++;
-           
+            soundeffector.PlayCoinSound(); // вызов звука монет
+
         }
 
         // собираем сердечки

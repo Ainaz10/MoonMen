@@ -18,6 +18,8 @@ public class Main : MonoBehaviour
     public TimeWork timeWork;
     public float CountDown;
     public GameObject inventoryPan;
+    public Soundeffector soundeffector;
+    public AudioSource musicSource, soundSource;
 
 
     public void ReloadLvl()
@@ -29,6 +31,10 @@ public class Main : MonoBehaviour
 
     private void Start()
     {
+        musicSource.volume = (float)PlayerPrefs.GetInt("MusicVolume")/9;
+        soundSource.volume = (float)PlayerPrefs.GetInt("SoundVolume")/9;
+
+
         if ((int)timeWork == 2)
             timer = CountDown;
     }
@@ -81,6 +87,9 @@ public class Main : MonoBehaviour
 
     public void Win()
     {
+        //звук победы
+        soundeffector.PlayWinSound();
+
         Time.timeScale = 0f;
         player.enabled = true;
         WinScreen.SetActive(true);
@@ -100,11 +109,13 @@ public class Main : MonoBehaviour
         // скрытие панеля с предметами
         inventoryPan.SetActive(false);
         GetComponent<Inventory>().RecountItems();
-
     }
 
     public void Lose()
     {
+        //звук поражения
+        soundeffector.PlayLoseSound();
+
         Time.timeScale = 0f;
         player.enabled = true;
         LoseScreen.SetActive(true);
