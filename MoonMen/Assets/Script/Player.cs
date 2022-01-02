@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     public Image insideCountdown;
     public Inventory inventory;
     public Soundeffector soundeffector;
+    public Joystick joystick;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +47,7 @@ public class Player : MonoBehaviour
         {
             anim.SetInteger("State", 4);
             isGrounded = true; // возможность прыгать в воде
-            if (Input.GetAxis("Horizontal") != 0)
+            if (joystick.Horizontal >= 0.3f || joystick.Horizontal <= -0.3f)
                 Flip(); 
         }
         else
@@ -54,7 +55,7 @@ public class Player : MonoBehaviour
 
             // !!! Если внутри if только одна команда то фигурные скобки можно не ставить. Если 2 и более то они не будут считываться, что бы считалось надо ставить фигурные скобки.
             CheckGround();
-            if (Input.GetAxis("Horizontal") == 0 && (isGrounded) && !isClimbing) // если (не нажата ни одна клавиша) и (находится на земле) то 
+            if (joystick.Horizontal < 0.3f && joystick.Horizontal > -0.3f && (isGrounded) && !isClimbing) // если (не нажата ни одна клавиша) и (находится на земле) то 
             {
                 anim.SetInteger("State", 1); // { установить/задействовать анимацию ( "State", 1) } 1 - это номер анимации
             }
@@ -78,7 +79,11 @@ public class Player : MonoBehaviour
                 insideCountdown.fillAmount = 1 - (insideTimer / insideTimerUp);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded) // код для кнопки прыжка "пробел" 
+    }
+
+    public void Jump()
+    {
+        if (isGrounded)
         {
             rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse); // код для прыжка.
             soundeffector.PlayJumpSound(); //вызов звука прыжка
@@ -88,15 +93,19 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb.velocity.y); // считывается какая клавиша нажата что приводит в движение в персонажа
-
+        if (joystick.Horizontal >= 0.2f)
+            rb.velocity = new Vector2(speed, rb.velocity.y); // считывается какая клавиша нажата что приводит в движение в персонажа
+        else if (joystick.Horizontal <= -0.2f)
+            rb.velocity = new Vector2(-speed, rb.velocity.y);
+        else
+            rb.velocity = new Vector2(0f, rb.velocity.y);
     }
 
     void Flip()
     {
-        if (Input.GetAxis("Horizontal") > 0) // "Input.GetAxis("Horizontal") > 0" имитация нажатия кнопки "направо" (-1---0---1)
+        if (joystick.Horizontal >= 0.3f) // "Input.GetAxis("Horizontal") > 0" имитация нажатия кнопки "направо" (-1---0---1)
             transform.localRotation = Quaternion.Euler(0, 0, 0); //transform.localRotation - отвечает за поворот персонажа. в данном случае 0 0 0 является исходной позицией и смотрит объект направо.
-        if (Input.GetAxis("Horizontal") < 0) // "< 0
+        if (joystick.Horizontal <= -0.3f) // "< 0
             transform.localRotation = Quaternion.Euler(0, 180, 0); //
     }
 
