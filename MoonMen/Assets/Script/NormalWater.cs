@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : MonoBehaviour
+public class NormalWater : MonoBehaviour
 {
     float timer = 0f;
-    float timerHit = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -29,24 +28,16 @@ public class Water : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
-        {
             collision.GetComponent<Player>().inWater = true;
-            timerHit += Time.deltaTime;
-            if (timerHit >= 2f)
-            {
-                collision.gameObject.GetComponent<Player>().RecountHp(-1);
-                timerHit = 0;
-            }
-        }
+            
+        
             
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
-        {
+        
             collision.GetComponent<Player>().inWater = false;
 
-            timerHit = 0;
-        }
     }
 }

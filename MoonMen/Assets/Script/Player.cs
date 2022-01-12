@@ -270,14 +270,14 @@ public class Player : MonoBehaviour
             //rb.bodyType = RigidbodyType2D.Kinematic; // убираем гравитацию
             rb.gravityScale = 0f;
             rb.velocity = new Vector2(0, 0);
-            if (Input.GetAxis("Vertical") == 0) //условия для анимации при нажатии клавиша вверх 
+            if (joystick.Vertical == 0) //условия для анимации при нажатии клавиша вверх 
             {
                 anim.SetInteger("State", 5);
             }
             else
             {
                 anim.SetInteger("State", 6);
-                transform.Translate(Vector3.up * Input.GetAxis("Vertical") * speed * 0.5f * Time.deltaTime);  // translate меняет позицию персонажа когда он находится в зоне лестницы
+                transform.Translate(Vector3.up * joystick.Vertical * speed * 0.5f * Time.deltaTime);  // translate меняет позицию персонажа когда он находится в зоне лестницы
             }
             
         }
